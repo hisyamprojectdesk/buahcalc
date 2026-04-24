@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>BuahCalc</title>
+<style>
+:root {
+  --bg:    #0D0D0D;
+  --bg2:   #141414;
+  --bg3:   #1B1B1B;
+  --bg4:   #222222;
+  --bd:    #252525;
+  --bd2:   #303030;
+  --bd3:   #3A3A3A;
+  --tx:    #E8E8E8;
+  --tx2:   #888888;
+  --tx3:   #505050;
+  --gn:    #22C55E;
+  --gn2:   #16A34A;
+  --gbg:   rgba(34,197,94,0.07);
+  --gbr:   rgba(34,197,94,0.22);
+  --rd:    #F87171;
+  --rd2:   #DC2626;
+  --rbg:   rgba(248,113,113,0.07);
+  --rbr:   rgba(248,113,113,0.22);
+  --wn:    #FBBF24;
+  --wbg:   rgba(251,191,36,0.07);
+  --wbr:   rgba(251,191,36,0.22);
+  --r:     12px;
+  --r2:    8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html{color-scheme:dark;}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;padding-bottom:48px;font-size:15px;-webkit-font-smoothing:antialiased;}
+
+.hdr{background:var(--bg2);border-bottom:1px solid var(--bd);padding:14px 16px 11px;position:sticky;top:0;z-index:100;}
+.hdr-r{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;}
+.logo{font-size:17px;font-weight:700;letter-spacing:-0.3px;}
+.logo b{color:var(--gn);}
+.seg{display:flex;background:var(--bg3);border-radius:8px;padding:3px;gap:2px;}
+.sb{padding:5px 14px;border-radius:6px;font-size:12px;font-weight:600;border:none;cursor:pointer;color:var(--tx2);background:transparent;transition:all 0.15s;}
+.sb.on{background:var(--bg4);color:var(--tx);border:1px solid var(--bd2);}
+.pw{background:var(--bg4);border-radius:2px;height:2px;}
+.pb{height:2px;border-radius:2px;background:var(--gn);transition:width 0.4s;width:0%;}
+.pl{font-size:10px;color:var(--tx3);margin-top:4px;}
+
+.wrap{max-width:480px;margin:0 auto;padding:12px 13px 0;}
+
+.card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:9px;overflow:hidden;}
+.chdr{padding:12px 14px 10px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+.chl{display:flex;align-items:center;gap:9px;}
+.num{width:22px;height:22px;border-radius:50%;background:var(--bg4);border:1px solid var(--bd2);font-size:10px;font-weight:700;color:var(--tx3);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.num.done{background:var(--gn2);border-color:var(--gn2);color:#fff;}
+.ct{font-size:13px;font-weight:700;color:var(--tx);}
+.cs{font-size:11px;color:var(--tx3);margin-top:1px;}
+.chv{font-size:10px;color:var(--tx3);transition:transform 0.2s;}
+.chv.up{transform:rotate(180deg);}
+.cb{padding:12px 14px;}
+
+.fg{margin-bottom:12px;}
+.fg:last-child{margin-bottom:0;}
+label{display:block;font-size:10px;font-weight:700;color:var(--tx3);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.6px;}
+input[type="text"],input[type="number"],select{width:100%;padding:10px 12px;border:1px solid var(--bd2);border-radius:var(--r2);font-size:16px;color:var(--tx);background:var(--bg3);appearance:none;-webkit-appearance:none;transition:border-color 0.15s;}
+input:focus,select:focus{outline:none;border-color:var(--bd3);}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23505050' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;}
+.hint{font-size:11px;color:var(--tx3);margin-top:4px;line-height:1.4;}
+
+input[type="range"]{width:100%;height:4px;border-radius:2px;appearance:none;-webkit-appearance:none;background:var(--bd2);cursor:pointer;margin:2px 0;}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--tx);border:2px solid var(--bg3);}
+.rv{font-size:19px;font-weight:700;color:var(--tx);text-align:center;margin-bottom:5px;font-variant-numeric:tabular-nums;}
+.rl{display:flex;justify-content:space-between;font-size:10px;color:var(--tx3);margin-top:3px;}
+
+.tr{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;}
+.tl{font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:0.5px;}
+.seg-s{display:flex;background:var(--bg3);border-radius:6px;padding:2px;gap:2px;}
+.seg-s .sb{padding:4px 12px;font-size:11px;border-radius:5px;}
+
+.dv{height:1px;background:var(--bd);margin:10px 0;}
+
+.sbox{background:var(--bg3);border-radius:var(--r2);padding:11px 12px;margin-top:9px;}
+.sbox-t{font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;}
+.sr{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bd);}
+.sr:last-child{border-bottom:none;padding-bottom:0;}
+.sr label{font-size:12px;color:var(--tx2);text-transform:none;letter-spacing:0;font-weight:400;margin:0;}
+.si{width:110px;padding:6px 10px;font-size:13px;text-align:right;border:1px solid var(--bd2);border-radius:6px;background:var(--bg3);color:var(--tx);}
+
+.sum{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:9px;padding:11px 13px;}
+.sum-t{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--tx3);margin-bottom:9px;}
+
+.mr{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--bd);}
+.mr:last-child{border-bottom:none;padding-bottom:0;}
+.ml{font-size:12px;color:var(--tx2);}
+.mv{font-size:13px;font-weight:700;color:var(--tx);font-variant-numeric:tabular-nums;}
+.mv.big{font-size:17px;color:var(--gn);}
+.mv.gn{color:var(--gn);}
+.mv.rd{color:var(--rd);}
+.mv.wn{color:var(--wn);}
+
+.sc3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;}
+.sc{background:var(--bg3);border-radius:var(--r2);padding:9px 7px;text-align:center;border:1px solid var(--bd);}
+.sc.g{background:var(--gbg);border-color:var(--gbr);}
+.sc.r{background:var(--rbg);border-color:var(--rbr);}
+.sc.w{background:var(--wbg);border-color:var(--wbr);}
+.sl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--tx3);margin-bottom:3px;}
+.sc.g .sl{color:var(--gn2);}
+.sc.r .sl{color:var(--rd2);}
+.sc.w .sl{color:var(--wn);}
+.sn{font-size:13px;font-weight:700;color:var(--tx);font-variant-numeric:tabular-nums;}
+.sc.g .sn{color:var(--gn);}
+.sc.r .sn{color:var(--rd);}
+.ss{font-size:10px;color:var(--tx3);margin-top:2px;}
+
+.reco{border-radius:var(--r2);padding:15px 12px;text-align:center;margin-bottom:10px;border:1px solid var(--bd);}
+.reco.safe{background:var(--gbg);border-color:var(--gbr);}
+.reco.risky{background:var(--wbg);border-color:var(--wbr);}
+.reco.danger{background:var(--rbg);border-color:var(--rbr);}
+.reco.over{background:var(--bg3);border-color:var(--bd2);}
+.rn{font-size:42px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;}
+.reco.safe .rn{color:var(--gn);}
+.reco.risky .rn{color:var(--wn);}
+.reco.danger .rn{color:var(--rd);}
+.reco.over .rn{color:var(--tx2);}
+.ru{font-size:12px;color:var(--tx2);margin-top:3px;}
+.rs{font-size:11px;font-weight:700;margin-top:7px;text-transform:uppercase;letter-spacing:0.4px;}
+.reco.safe .rs{color:var(--gn);}
+.reco.risky .rs{color:var(--wn);}
+.reco.danger .rs{color:var(--rd);}
+.reco.over .rs{color:var(--tx2);}
+
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;}
+.bg{background:var(--gbg);color:var(--gn);border:1px solid var(--gbr);}
+.br{background:var(--rbg);color:var(--rd);border:1px solid var(--rbr);}
+.bw{background:var(--wbg);color:var(--wn);border:1px solid var(--wbr);}
+.bn{background:var(--bg4);color:var(--tx2);border:1px solid var(--bd2);}
+
+.rc{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:9px;overflow:hidden;}
+.rh{padding:10px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;}
+.rt{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--tx3);}
+.rb{padding:10px 14px 13px;}
+
+.tabs{display:flex;background:var(--bg3);border-radius:var(--r2);padding:3px;margin-bottom:11px;gap:2px;}
+.tab{flex:1;padding:8px 6px;border-radius:6px;font-size:12px;font-weight:600;border:none;cursor:pointer;color:var(--tx2);background:transparent;text-align:center;transition:all 0.15s;}
+.tab.on{background:var(--bg4);color:var(--tx);border:1px solid var(--bd2);}
+
+.ab{padding:10px 0;border-bottom:1px solid var(--bd);}
+.ab:last-child{border-bottom:none;padding-bottom:0;}
+.at{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--tx3);margin-bottom:6px;display:flex;align-items:center;gap:5px;}
+.at::before{content:'';display:block;width:2px;height:11px;background:var(--bd3);border-radius:1px;flex-shrink:0;}
+.ax{font-size:13px;line-height:1.65;color:var(--tx2);}
+.ax strong{color:var(--tx);font-weight:600;}
+.ax .ok{color:var(--gn);font-weight:600;}
+.ax .wn{color:var(--wn);font-weight:600;}
+.ax .bd{color:var(--rd);font-weight:600;}
+
+.qv{font-size:34px;font-weight:800;letter-spacing:-1px;text-align:center;}
+.qv.beli{color:var(--gn);}
+.qv.nego{color:var(--wn);}
+.qv.skip{color:var(--rd);}
+.qs{font-size:11px;color:var(--tx3);text-align:center;margin-top:3px;margin-bottom:11px;}
+.qr{font-size:12px;color:var(--tx2);text-align:center;padding:0 4px 3px;line-height:1.5;}
+
+.hidden{display:none!important;}
+.ftr{text-align:center;padding:22px 0 8px;font-size:11px;color:var(--tx3);}
+@keyframes fi{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+.fi{animation:fi 0.2s ease;}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-r">
+    <div class="logo">Buah<b>Calc</b></div>
+    <div class="seg">
+      <button class="sb on" id="btnF" onclick="setMode('full')">Detail</button>
+      <button class="sb" id="btnQ" onclick="setMode('quick')">Cepat</button>
+    </div>
+  </div>
+  <div class="pw"><div class="pb" id="pb"></div></div>
+  <div class="pl" id="pl">Isi data untuk mulai kalkulasi</div>
+</div>
+
+<div class="wrap" id="fullMode">
+
+  <!-- STEP 1 -->
+  <div class="card">
+    <div class="chdr" onclick="tog('b1','cv1')">
+      <div class="chl"><div class="num done" id="n1">1</div><div><div class="ct">Data Dasar</div><div class="cs">Nama buah dan target kebutuhan</div></div></div>
+      <div class="chv up" id="cv1">▼</div>
+    </div>
+    <div id="b1" class="cb">
+      <div class="fg"><label>Nama Buah</label><input type="text" id="namaBuah" placeholder="contoh: Jeruk, Apel, Mangga..." oninput="calc()"></div>
+      <div class="fg"><label>Target Kebutuhan (pcs)</label><input type="number" id="targetPcs" placeholder="contoh: 1400" inputmode="numeric" oninput="calc()"><div class="hint">Jumlah buah yang perlu kamu jual</div></div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="card">
+    <div class="chdr" onclick="tog('b2','cv2')">
+      <div class="chl"><div class="num" id="n2">2</div><div><div class="ct">Data Supplier</div><div class="cs">Satuan, estimasi pcs, dan harga beli</div></div></div>
+      <div class="chv up" id="cv2">▼</div>
+    </div>
+    <div id="b2" class="cb">
+      <div class="fg"><label>Satuan Barang</label><select id="unitType" onchange="calc()"><option value="kerat">Kerat</option><option value="peti">Peti</option><option value="karton">Karton</option><option value="dus">Dus</option><option value="kg">Kg</option><option value="box">Box</option><option value="ikat">Ikat</option></select></div>
+      <div class="fg">
+        <label>Estimasi Pcs per <span id="uLbl">Kerat</span></label>
+        <div class="rv">Min: <span id="vMn">40</span> pcs</div>
+        <input type="range" id="rMn" min="1" max="300" value="40" step="1" oninput="syncR('min')">
+        <div class="rl"><span>1</span><span>300</span></div>
+        <div style="margin-top:10px">
+          <div class="rv">Max: <span id="vMx">50</span> pcs</div>
+          <input type="range" id="rMx" min="1" max="300" value="50" step="1" oninput="syncR('max')">
+          <div class="rl"><span>1</span><span>300</span></div>
+        </div>
+        <div class="hint" id="avgH">Rata-rata estimasi: <b>45 pcs</b></div>
+      </div>
+      <div class="fg">
+        <label>Harga Beli</label>
+        <div class="g2">
+          <input type="number" id="supPrice" placeholder="contoh: 85000" inputmode="numeric" oninput="calc()">
+          <select id="priceUnit" onchange="calc()"><option value="per_unit">Per Satuan</option><option value="per_kg">Per Kg</option><option value="per_pcs">Per Pcs</option></select>
+        </div>
+        <div class="hint">Pilih satuan sesuai cara supplier mematok harga</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUTO SUMMARY -->
+  <div class="sum fi hidden" id="sumCard">
+    <div class="sum-t">Ringkasan Otomatis</div>
+    <div class="sc3" style="margin-bottom:9px">
+      <div class="sc r"><div class="sl">Minimum</div><div class="sn" id="ssMin">—</div><div class="ss">pcs/unit</div></div>
+      <div class="sc"><div class="sl">Rata-rata</div><div class="sn" id="ssAvg">—</div><div class="ss">pcs/unit</div></div>
+      <div class="sc g"><div class="sl">Maksimum</div><div class="sn" id="ssMax">—</div><div class="ss">pcs/unit</div></div>
+    </div>
+    <div class="mr"><span class="ml">Estimasi harga per pcs</span><span class="mv" id="ssHpp">—</span></div>
+    <div class="mr"><span class="ml">Unit dibutuhkan (tanpa buffer)</span><span class="mv" id="ssBare">—</span></div>
+    <div class="mr"><span class="ml">Unit disarankan (dengan buffer)</span><span class="mv" id="ssReco">—</span></div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="card">
+    <div class="chdr" onclick="tog('b3','cv3')">
+      <div class="chl"><div class="num" id="n3">3</div><div><div class="ct">Biaya Logistik</div><div class="cs">Mandiri atau jasa 3rd party</div></div></div>
+      <div class="chv up" id="cv3">▼</div>
+    </div>
+    <div id="b3" class="cb">
+      <div class="tr">
+        <span class="tl">Jenis Logistik</span>
+        <div class="seg-s">
+          <button class="sb on" id="ltM" onclick="setLog('mandiri')">Mandiri</button>
+          <button class="sb" id="lt3" onclick="setLog('3p')">3rd Party</button>
+        </div>
+      </div>
+      <!-- MANDIRI -->
+      <div id="logM">
+        <div class="g2">
+          <div class="fg"><label>Jarak ke Pasar (km)</label><input type="number" id="kmP" placeholder="km" inputmode="decimal" oninput="calc()"></div>
+          <div class="fg"><label>Jarak ke Pembeli (km)</label><input type="number" id="kmA" placeholder="km" inputmode="decimal" oninput="calc()"></div>
+        </div>
+        <div class="g2">
+          <div class="fg"><label>Toll ke Pasar (Rp)</label><input type="number" id="tolP" placeholder="0" inputmode="numeric" oninput="calc()"></div>
+          <div class="fg"><label>Toll ke Pembeli (Rp)</label><input type="number" id="tolA" placeholder="0" inputmode="numeric" oninput="calc()"></div>
+        </div>
+        <div class="g2">
+          <div class="fg"><label>Parkir (Rp)</label><input type="number" id="park" placeholder="0" inputmode="numeric" oninput="calc()"></div>
+          <div class="fg"><label>Biaya Tak Terduga (Rp)</label><input type="number" id="tdgM" placeholder="0" inputmode="numeric" oninput="calc()"></div>
+        </div>
+        <div class="sbox">
+          <div class="sbox-t">Setting BBM</div>
+          <div class="sr"><label>Konsumsi BBM (km/liter)</label><input type="number" class="si" id="fEff" value="10" step="0.5" oninput="calc()"></div>
+          <div class="sr"><label>Harga BBM (Rp/liter)</label><input type="number" class="si" id="fPrc" value="10000" step="500" oninput="calc()"></div>
+        </div>
+      </div>
+      <!-- 3RD PARTY -->
+      <div id="log3" class="hidden">
+        <div class="fg"><label>Total Biaya Jasa Logistik (Rp)</label><input type="number" id="b3p" placeholder="contoh: 250000" inputmode="numeric" oninput="calc()"><div class="hint">Total tagihan dari jasa pengiriman atau angkutan</div></div>
+        <div class="fg"><label>Biaya Tak Terduga (Rp)</label><input type="number" id="tdg3" placeholder="0" inputmode="numeric" oninput="calc()"><div class="hint">Biaya bongkar muat, handling, atau lain-lain</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="card">
+    <div class="chdr" onclick="tog('b4','cv4')">
+      <div class="chl"><div class="num" id="n4">4</div><div><div class="ct">Risiko & Susut</div><div class="cs">Estimasi buah rusak atau terbuang</div></div></div>
+      <div class="chv up" id="cv4">▼</div>
+    </div>
+    <div id="b4" class="cb">
+      <div class="fg">
+        <label>Susut / Buah Rusak</label>
+        <div class="rv"><span id="shrV">5</span>%</div>
+        <input type="range" id="shrink" min="0" max="30" value="5" step="1" oninput="syncS()">
+        <div class="rl"><span>0% — tidak ada</span><span>30% — parah</span></div>
+        <div class="hint" id="shrH">Buffer susut sudah diperhitungkan dalam rekomendasi unit</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OUTPUT -->
+  <div id="outSec" class="hidden">
+
+    <!-- RECO -->
+    <div class="rc fi">
+      <div class="rh"><span class="rt">Rekomendasi Pembelian</span><div id="recoBdg"></div></div>
+      <div class="rb">
+        <div class="reco" id="recoBox">
+          <div class="rn" id="recoN">—</div>
+          <div class="ru" id="recoU">unit</div>
+          <div class="rs" id="recoS">—</div>
+        </div>
+        <div class="sc3" style="margin-bottom:10px">
+          <div class="sc r"><div class="sl">Worst</div><div class="sn" id="pW">—</div><div class="ss">pcs gross</div></div>
+          <div class="sc"><div class="sl">Normal</div><div class="sn" id="pN">—</div><div class="ss">pcs gross</div></div>
+          <div class="sc g"><div class="sl">Best</div><div class="sn" id="pB">—</div><div class="ss">pcs gross</div></div>
+        </div>
+        <div class="mr"><span class="ml">Pcs bersih — worst case</span><span class="mv" id="nW">—</span></div>
+        <div class="mr"><span class="ml">Pcs bersih — normal case</span><span class="mv" id="nN">—</span></div>
+        <div class="mr"><span class="ml">Buffer vs target (normal)</span><span class="mv" id="bufI">—</span></div>
+      </div>
+    </div>
+
+    <!-- TOTAL COST -->
+    <div class="rc fi">
+      <div class="rh"><span class="rt">Total Modal</span></div>
+      <div class="rb">
+        <div class="mr"><span class="ml">Biaya beli buah</span><span class="mv" id="cFr">—</span></div>
+        <div class="mr" id="rowFuel"><span class="ml">Biaya BBM</span><span class="mv" id="cFu">—</span></div>
+        <div class="mr hidden" id="row3p"><span class="ml">Biaya jasa logistik</span><span class="mv" id="c3p">—</span></div>
+        <div class="mr"><span class="ml">Biaya lainnya</span><span class="mv" id="cOt">—</span></div>
+        <div class="mr"><span class="ml" style="font-weight:700;color:var(--tx)">TOTAL MODAL</span><span class="mv big" id="cTot">—</span></div>
+      </div>
+    </div>
+
+    <!-- HPP -->
+    <div class="rc fi">
+      <div class="rh"><span class="rt">HPP — Harga Pokok per Pcs</span></div>
+      <div class="rb">
+        <div class="sc3">
+          <div class="sc r"><div class="sl">Worst</div><div class="sn" id="hW">—</div><div class="ss">per pcs</div></div>
+          <div class="sc"><div class="sl">Normal</div><div class="sn" id="hN">—</div><div class="ss">per pcs</div></div>
+          <div class="sc g"><div class="sl">Best</div><div class="sn" id="hB">—</div><div class="ss">per pcs</div></div>
+        </div>
+        <div class="hint" style="margin-top:8px">HPP = Total Modal dibagi pcs bersih yang bisa dijual</div>
+      </div>
+    </div>
+
+    <!-- SIMULASI HARGA JUAL -->
+    <div class="rc fi">
+      <div class="rh"><span class="rt">Simulasi Harga Jual</span></div>
+      <div class="rb">
+        <!-- Referensi -->
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--tx3);margin-bottom:8px">Referensi Harga Jual</div>
+        <div class="sc3" style="margin-bottom:11px">
+          <div class="sc r"><div class="sl">BEP Aman</div><div class="sn" id="refB">—</div><div class="ss">titik impas</div></div>
+          <div class="sc"><div class="sl">Margin 20%</div><div class="sn" id="ref20">—</div><div class="ss">sehat</div></div>
+          <div class="sc g"><div class="sl">Margin 40%</div><div class="sn" id="ref40">—</div><div class="ss">agresif</div></div>
+        </div>
+        <div class="dv"></div>
+        <!-- Tabs -->
+        <div class="tabs">
+          <button class="tab on" id="tPcs" onclick="setST('pcs')">Per Pcs</button>
+          <button class="tab" id="tInv" onclick="setST('inv')">Per Invoice Total</button>
+        </div>
+        <!-- Pane Pcs -->
+        <div id="pnPcs">
+          <div class="fg"><label>Harga Jual per Pcs (Rp)</label><input type="number" id="sellPcs" placeholder="masukkan harga jual per pcs" inputmode="numeric" oninput="calcP()"></div>
+          <div class="mr"><span class="ml">Implied total pendapatan (normal case)</span><span class="mv" id="impTot">—</span></div>
+        </div>
+        <!-- Pane Invoice -->
+        <div id="pnInv" class="hidden">
+          <div class="fg"><label>Target Total Pendapatan / Invoice (Rp)</label><input type="number" id="sellInv" placeholder="contoh: 5600000" inputmode="numeric" oninput="calcP()"><div class="hint">Masukkan angka invoice yang kamu inginkan — harga per pcs dihitung otomatis</div></div>
+          <div class="mr"><span class="ml">Harga jual per pcs — normal case</span><span class="mv" id="impPcsN">—</span></div>
+          <div class="mr"><span class="ml">Harga jual per pcs — worst case</span><span class="mv" id="impPcsW">—</span></div>
+        </div>
+        <div class="dv"></div>
+        <!-- Profit -->
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--tx3);margin-bottom:8px">Estimasi Profit</div>
+        <div class="sc3" style="margin-bottom:10px">
+          <div class="sc r"><div class="sl">Worst</div><div class="sn" id="prW">—</div><div class="ss">profit</div></div>
+          <div class="sc"><div class="sl">Normal</div><div class="sn" id="prN">—</div><div class="ss">profit</div></div>
+          <div class="sc g"><div class="sl">Best</div><div class="sn" id="prB">—</div><div class="ss">profit</div></div>
+        </div>
+        <div class="mr"><span class="ml">Margin (normal case)</span><span class="mv" id="mrgLbl">—</span></div>
+        <div class="mr"><span class="ml">ROI dari total modal</span><span class="mv" id="roiLbl">—</span></div>
+      </div>
+    </div>
+
+    <!-- AI ANALYSIS -->
+    <div class="rc fi">
+      <div class="rh"><span class="rt">Analisis & Strategi</span></div>
+      <div class="rb" style="padding-top:7px">
+        <div class="ab"><div class="at">Strategi Pembelian</div><div class="ax" id="aiBeli">—</div></div>
+        <div class="ab"><div class="at">Strategi Negosiasi</div><div class="ax" id="aiNego">—</div></div>
+        <div class="ab"><div class="at">Rekomendasi Harga Jual</div><div class="ax" id="aiJual">—</div></div>
+        <div class="ab"><div class="at">Klasifikasi Risiko Transaksi</div><div class="ax" id="aiRisk">—</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- QUICK MODE -->
+<div class="wrap hidden" id="quickMode">
+  <div class="card" style="margin-top:4px">
+    <div class="chdr" style="cursor:default">
+      <div class="chl"><div><div class="ct">Mode Keputusan Cepat</div><div class="cs">Input minimal, keputusan instan</div></div></div>
+    </div>
+    <div class="cb">
+      <div class="fg"><label>Target Pcs</label><input type="number" id="qTgt" placeholder="1400" inputmode="numeric" oninput="calcQ()"></div>
+      <div class="g2">
+        <div class="fg"><label>Min Pcs / Satuan</label><input type="number" id="qMn" placeholder="min" inputmode="numeric" oninput="calcQ()"></div>
+        <div class="fg"><label>Max Pcs / Satuan</label><input type="number" id="qMx" placeholder="max" inputmode="numeric" oninput="calcQ()"></div>
+      </div>
+      <div class="g2">
+        <div class="fg"><label>Harga per Satuan (Rp)</label><input type="number" id="qPrc" placeholder="85000" inputmode="numeric" oninput="calcQ()"></div>
+        <div class="fg"><label>Target Harga Jual/Pcs</label><input type="number" id="qSel" placeholder="900" inputmode="numeric" oninput="calcQ()"></div>
+      </div>
+    </div>
+  </div>
+  <div class="rc fi hidden" id="qRes">
+    <div class="rb">
+      <div class="qv" id="qV">—</div>
+      <div class="qs" id="qVs">—</div>
+      <div class="sc3" style="margin-bottom:10px">
+        <div class="sc r"><div class="sl">HPP Worst</div><div class="sn" id="qHW">—</div><div class="ss">per pcs</div></div>
+        <div class="sc"><div class="sl">HPP Normal</div><div class="sn" id="qHN">—</div><div class="ss">per pcs</div></div>
+        <div class="sc g"><div class="sl">HPP Best</div><div class="sn" id="qHB">—</div><div class="ss">per pcs</div></div>
+      </div>
+      <div class="mr"><span class="ml">Unit yang perlu dibeli</span><span class="mv" id="qUn">—</span></div>
+      <div class="mr"><span class="ml">Estimasi profit (normal)</span><span class="mv" id="qPr">—</span></div>
+      <div class="qr" id="qRn" style="margin-top:8px"></div>
+    </div>
+  </div>
+</div>
+
+<div class="ftr">BuahCalc v2.0</div>
+
+<script>
+let curMode='full', logT='mandiri', sellT='pcs', D={};
+const g=id=>document.getElementById(id);
+const v=(id,def=0)=>parseFloat(g(id).value)||def;
+const fmt=n=>n==null||isNaN(n)?'—':new Intl.NumberFormat('id-ID').format(Math.round(n));
+const rp=n=>{if(!n||isNaN(n))return'—';const s=n<0?'-':'';return s+'Rp '+fmt(Math.abs(n));};
+
+function setMode(m){
+  curMode=m;
+  g('fullMode').classList.toggle('hidden',m!=='full');
+  g('quickMode').classList.toggle('hidden',m!=='quick');
+  g('btnF').classList.toggle('on',m==='full');
+  g('btnQ').classList.toggle('on',m==='quick');
+}
+function tog(bid,cid){
+  const b=g(bid),c=g(cid),h=b.style.display==='none';
+  b.style.display=h?'':'none'; c.classList.toggle('up',h);
+}
+function setLog(t){
+  logT=t;
+  g('logM').classList.toggle('hidden',t!=='mandiri');
+  g('log3').classList.toggle('hidden',t!=='3p');
+  g('ltM').classList.toggle('on',t==='mandiri');
+  g('lt3').classList.toggle('on',t==='3p');
+  calc();
+}
+function setST(t){
+  sellT=t;
+  g('tPcs').classList.toggle('on',t==='pcs');
+  g('tInv').classList.toggle('on',t==='inv');
+  g('pnPcs').classList.toggle('hidden',t!=='pcs');
+  g('pnInv').classList.toggle('hidden',t!=='inv');
+  calcP();
+}
+function syncR(type){
+  let mn=parseInt(g('rMn').value),mx=parseInt(g('rMx').value);
+  if(type==='min'&&mn>mx){g('rMx').value=mn;mx=mn;}
+  if(type==='max'&&mx<mn){g('rMn').value=mx;mn=mx;}
+  g('vMn').textContent=mn; g('vMx').textContent=mx;
+  g('avgH').innerHTML='Rata-rata estimasi: <b>'+(((mn+mx)/2).toFixed(1))+' pcs</b>';
+  const u=g('unitType').value; g('uLbl').textContent=u.charAt(0).toUpperCase()+u.slice(1);
+  calc();
+}
+function syncS(){
+  const s=g('shrink').value; g('shrV').textContent=s;
+  const tgt=v('targetPcs');
+  if(tgt>0) g('shrH').innerHTML='Kamu butuh +'+fmt(Math.ceil(tgt*parseInt(s)/100))+' pcs ekstra untuk menutup susut <b>'+s+'%</b>';
+  calc();
+}
+
+function calc(){
+  const nama=g('namaBuah').value.trim();
+  const tgt=v('targetPcs');
+  const unit=g('unitType').value;
+  const pMn=v('rMn',1), pMx=v('rMx',1);
+  const pAv=(pMn+pMx)/2;
+  const price=v('supPrice');
+  const pUnit=g('priceUnit').value;
+  const shrink=v('shrink',0)/100;
+  const uLbl=unit.charAt(0).toUpperCase()+unit.slice(1);
+  g('uLbl').textContent=uLbl;
+  const ok=tgt>0&&pMn>0&&pMx>0&&price>0;
+  g('sumCard').classList.toggle('hidden',!ok);
+  if(!ok){setP(tgt>0||nama?15:0,'Isi data untuk mulai kalkulasi');g('outSec').classList.add('hidden');g('n1').classList.toggle('done',!!(nama&&tgt));return;}
+
+  const tgtS=tgt/(1-shrink||1);
+  const uBare=Math.ceil(tgtS/pAv);
+  const uReco=Math.ceil(tgtS/pMn);
+
+  g('ssMin').textContent=Math.round(pMn);g('ssAvg').textContent=pAv.toFixed(1);g('ssMax').textContent=Math.round(pMx);
+  let ppcs=pUnit==='per_unit'?price/pAv:pUnit==='per_kg'?price*0.15:price;
+  g('ssHpp').textContent=rp(ppcs);
+  g('ssBare').textContent=uBare+' '+unit;
+  g('ssReco').textContent=uReco+' '+unit;
+
+  let frCost=pUnit==='per_unit'?uReco*price:pUnit==='per_kg'?uReco*pAv*0.15*price:uReco*pAv*price;
+  let fuelC=0,logi3=0,otherC=0;
+  if(logT==='mandiri'){
+    const km=(v('kmP')+v('kmA'))*2;
+    fuelC=(km/v('fEff',10))*v('fPrc',10000);
+    otherC=v('tolP')+v('tolA')+v('park')+v('tdgM');
+  } else {
+    logi3=v('b3p'); otherC=v('tdg3');
+  }
+  const totLog=fuelC+logi3+otherC;
+  const totCost=frCost+totLog;
+
+  const gW=uReco*pMn, gN=Math.round(uReco*pAv), gB=uReco*pMx;
+  const nW=Math.round(gW*(1-shrink)), nN=Math.round(gN*(1-shrink)), nB=Math.round(gB*(1-shrink));
+  const hW=totCost/Math.max(nW,1), hN=totCost/Math.max(nN,1), hB=totCost/Math.max(nB,1);
+
+  const buf=nN-tgt, bufP=tgt>0?(buf/tgt)*100:0;
+  let status='safe',stext='Aman — sesuai target',scls='safe';
+  if(nW<tgt*0.9){status='danger';stext='Kurang — tambah unit';scls='danger';}
+  else if(nW<tgt){status='risky';stext='Berisiko — worst case kurang';scls='risky';}
+  else if(bufP>30){status='over';stext='Overbuy — pertimbangkan kurangi';scls='over';}
+
+  g('n1').classList.toggle('done',!!(nama&&tgt));
+  g('n2').classList.toggle('done',!!price);
+  setP(75,'Menghitung...');
+  g('outSec').classList.remove('hidden');
+
+  const rb=g('recoBox'); rb.className='reco '+scls;
+  g('recoN').textContent=uReco; g('recoU').textContent=unit; g('recoS').textContent=stext;
+  const bm={safe:'bg',risky:'bw',danger:'br',over:'bn'};
+  g('recoBdg').innerHTML='<span class="badge '+bm[status]+'">'+stext+'</span>';
+
+  g('pW').textContent=fmt(gW);g('pN').textContent=fmt(gN);g('pB').textContent=fmt(gB);
+  g('nW').textContent=fmt(nW)+' pcs';g('nN').textContent=fmt(nN)+' pcs';
+  const bEl=g('bufI');
+  if(buf>=0){bEl.textContent='+'+fmt(buf)+' pcs ('+bufP.toFixed(1)+'%)';bEl.className='mv gn';}
+  else{bEl.textContent=fmt(buf)+' pcs (KURANG!)';bEl.className='mv rd';}
+
+  g('cFr').textContent=rp(frCost);
+  g('cFu').textContent=rp(fuelC);
+  g('c3p').textContent=rp(logi3);
+  g('cOt').textContent=otherC>0?rp(otherC):'Rp 0';
+  g('cTot').textContent=rp(totCost);
+  g('rowFuel').classList.toggle('hidden',logT!=='mandiri'||fuelC===0);
+  g('row3p').classList.toggle('hidden',logT!=='3p');
+
+  g('hW').textContent=rp(hW);g('hN').textContent=rp(hN);g('hB').textContent=rp(hB);
+  g('refB').textContent=rp(hW);g('ref20').textContent=rp(hN*1.2);g('ref40').textContent=rp(hN*1.4);
+
+  D={totCost,frCost,fuelC,logi3,otherC,nW,nN,nB,hW,hN,hB,uReco,unit,tgt,nama,pAv,shrink,status,bufP,logT};
+  calcP(); genAI();
+  setP(100,'Kalkulasi selesai');
+}
+
+function calcP(){
+  if(!D.totCost)return;
+  let spcs=0;
+  if(sellT==='pcs'){
+    spcs=v('sellPcs');
+    g('impTot').textContent=spcs>0?rp(spcs*D.nN):'—';
+  } else {
+    const inv=v('sellInv');
+    if(inv>0&&D.nN>0){
+      spcs=inv/D.nN;
+      g('impPcsN').textContent=rp(spcs);
+      g('impPcsW').textContent=D.nW>0?rp(inv/D.nW):'—';
+    } else {g('impPcsN').textContent='—';g('impPcsW').textContent='—';}
+  }
+  if(spcs>0){
+    const pW=(spcs*D.nW)-D.totCost, pN=(spcs*D.nN)-D.totCost, pB=(spcs*D.nB)-D.totCost;
+    const mrg=((spcs-D.hN)/spcs*100), roi=(pN/D.totCost*100);
+    const fc=p=>p>=0?'color:var(--gn)':'color:var(--rd)';
+    const fp=p=>(p>=0?'+':'')+rp(p);
+    g('prW').textContent=fp(pW);g('prW').style=fc(pW);
+    g('prN').textContent=fp(pN);g('prN').style=fc(pN);
+    g('prB').textContent=fp(pB);g('prB').style=fc(pB);
+    const mEl=g('mrgLbl'); mEl.textContent=mrg.toFixed(1)+'%'; mEl.style=mrg>20?'color:var(--gn)':mrg>0?'color:var(--wn)':'color:var(--rd)';
+    const rEl=g('roiLbl'); rEl.textContent=roi.toFixed(1)+'%'; rEl.style=roi>15?'color:var(--gn)':roi>0?'color:var(--wn)':'color:var(--rd)';
+  } else {
+    ['prW','prN','prB'].forEach(id=>{g(id).textContent='—';g(id).style='';});
+    g('mrgLbl').textContent='—';g('roiLbl').textContent='—';
+  }
+}
+
+function genAI(){
+  if(!D.totCost)return;
+  const logP=(D.totCost-D.frCost)/D.totCost*100;
+  const pu=D.frCost/D.uReco;
+  const sm=(D.hN*D.nN*0.80-(D.totCost-D.frCost))/D.uReco;
+  const gap=sm-pu;
+  let b='';
+  if(D.status==='safe') b=`Pembelian <strong>${D.uReco} ${D.unit}</strong> sudah tepat dan aman. Worst case masih bisa cover target dengan susut ${Math.round(D.shrink*100)}%. Tidak perlu tambah unit kecuali ada permintaan ekstra yang terkonfirmasi.`;
+  else if(D.status==='risky') b=`<span class="wn">Perlu perhatian.</span> Pada skenario minimum pcs, jumlah bisa kurang dari target. Pertimbangkan tambah <strong>1–2 unit</strong> atau negosiasikan jaminan minimum pcs ke supplier.`;
+  else if(D.status==='danger') b=`<span class="bd">Peringatan kritis.</span> Bahkan skenario terbaik belum tentu cukup. Tambah unit segera atau cari supplier lain dengan estimasi pcs lebih tinggi.`;
+  else b=`Kalkulasi menunjukkan potensi overbuy <span class="wn">${D.bufP.toFixed(0)}%</span> di atas target. Pertimbangkan kurangi 1–2 unit untuk efisiensi modal.`;
+  g('aiBeli').innerHTML=b;
+
+  let n='';
+  if(gap<0) n=`Harga supplier saat ini <span class="bd">terlalu tinggi</span> untuk margin yang sehat. Harga maksimal aman: <strong>${rp(sm)}/unit</strong>. Nego turun atau evaluasi supplier alternatif.`;
+  else if(gap<pu*0.1) n=`Harga masih dalam batas, tapi margin tipis. Coba nego ke <strong>${rp(sm)}/unit</strong> dengan argumen volume pembelian ${D.uReco} unit sekaligus.`;
+  else n=`Harga supplier masih wajar. Batas atas yang masih menguntungkan: <strong>${rp(sm)}/unit</strong>. Kalau bisa lebih murah, itu tambahan profit.`;
+  g('aiNego').innerHTML=n;
+
+  g('aiJual').innerHTML=`Jangan jual di bawah <strong>${rp(D.hW*1.05)}/pcs</strong> (BEP worst + 5%). Harga normal sehat: <strong>${rp(D.hN*1.2)}/pcs</strong> (margin 20%). Target agresif: <strong>${rp(D.hN*1.4)}/pcs</strong> (margin 40%). Gunakan tab "Per Invoice Total" jika kamu sudah punya angka total pendapatan yang ingin dicapai.`;
+
+  let r='';
+  if(D.status==='danger') r=`<span class="bd">Tidak Disarankan.</span> Risiko kurang pcs sangat tinggi. Selesaikan masalah jumlah unit dulu sebelum deal.`;
+  else if(D.status==='risky'||logP>20) r=`<span class="wn">Berisiko — lanjutkan dengan hati-hati.</span> ${D.status==='risky'?'Worst case pcs bisa kurang dari target. ':''}${logP>20?'Biaya logistik '+logP.toFixed(0)+'% dari total modal — terlalu besar.':''}`;
+  else r=`<span class="ok">Aman.</span> Biaya logistik ${logP.toFixed(1)}% dari total modal (efisien). Skenario worst case mencapai ${(D.nW/D.tgt*100).toFixed(0)}% dari target.`;
+  g('aiRisk').innerHTML=r;
+}
+
+function setP(pct,lbl){g('pb').style.width=pct+'%';g('pl').textContent=lbl;}
+
+function calcQ(){
+  const tgt=v('qTgt'),mn=v('qMn',1),mx=v('qMx',1),pr=v('qPrc'),sel=v('qSel');
+  if(!tgt||!mn||!mx||!pr){g('qRes').classList.add('hidden');return;}
+  const av=(mn+mx)/2, units=Math.ceil(tgt/mn), cost=units*pr;
+  const pW=units*mn, pN=Math.round(units*av), pB=units*mx;
+  const hW=cost/pW, hN=cost/pN, hB=cost/pB;
+  g('qHW').textContent=rp(hW);g('qHN').textContent=rp(hN);g('qHB').textContent=rp(hB);
+  g('qUn').textContent=units+' unit';
+  let verdict,vsub,vcls,reason;
+  if(sel>0){
+    const mrg=((sel-hN)/sel)*100, profN=(sel*pN)-cost;
+    g('qPr').textContent=(profN>=0?'+':'')+rp(profN);
+    g('qPr').style=profN>=0?'color:var(--gn)':'color:var(--rd)';
+    if(sel<hW){verdict='SKIP';vsub='Harga jual di bawah HPP worst case';vcls='skip';reason=`Dengan harga jual ${rp(sel)}/pcs, kamu rugi bahkan di skenario terbaik. HPP worst: ${rp(hW)}.`;}
+    else if(mrg<10){verdict='NEGO';vsub='Margin terlalu tipis — di bawah 10%';vcls='nego';reason=`Margin hanya ${mrg.toFixed(1)}%. Nego harga supplier atau naikkan harga jual ke minimal ${rp(hN*1.2)}.`;}
+    else{verdict='BELI';vsub='Margin '+mrg.toFixed(1)+'% — layak';vcls='beli';reason=`Estimasi profit ${rp(profN)} (normal case). Beli ${units} unit.`;}
+  } else {
+    g('qPr').textContent='—';g('qPr').style='';
+    verdict='CEK HPP';vsub='Bandingkan dengan harga pasar';vcls='nego';reason=`HPP normal: ${rp(hN)}/pcs. Pastikan harga jualmu di atas angka ini.`;
+  }
+  g('qRes').classList.remove('hidden');
+  const vEl=g('qV');vEl.textContent=verdict;vEl.className='qv '+vcls;
+  g('qVs').textContent=vsub; g('qRn').textContent=reason;
+}
+
+// init
+g('vMn').textContent='40';g('vMx').textContent='50';
+setLog('mandiri'); setST('pcs');
+</script>
+</body>
+</html>
